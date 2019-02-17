@@ -1,11 +1,291 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <script src="https://code.highcharts.com/highcharts.src.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <h2>Dernieres données : solaire</h2>
+  <ul>
+    <li>
+      <%= solaire[0].time.toLocaleString('fr-FR', { timeZone: 'UTC' }) %>
+    </li>
+    <li>
+      <%= solaire[0].ensoleillement %>
+    </li>
+    <li>
+      <%= solaire[0].courant_charge %>
+    </li>
+    <li>
+      <%= solaire[0].capacite_batterie %>
+    </li>
+    <li>
+      <%= solaire[0].conso_auj %>
+    </li>
+    <li>
+      <%= solaire[0].conso_mois %>
+    </li>
+    <li>
+      <%= solaire[0].conso_totale %>
+    </li>
+    <li>
+      <%= solaire[0].produite_auj %>
+    </li>
+    <li>
+      <%= solaire[0].produite_mois %>
+    </li>
+    <li>
+      <%= solaire[0].produite_total %>
+    </li>
+  </ul>
+  <br>
+
+
+  <h2>Dernieres données : meteo</h2>
+  <ul>
+    <li>
+      <%= meteo[0].time.toLocaleString('fr-FR', { timeZone: 'UTC' }) %>
+    </li>
+    <li>
+      <%= meteo[0].current_temp %>
+    </li>
+    <li>
+    <img src="<%= meteo[0].imageUrl %>" alt="">
+    </li>
+    <li>
+      <%= meteo[0].skytext %>
+    </li>
+    <li>
+      <%= meteo[0].current_hum %>
+    </li>
+    <li>
+      <%= meteo[0].sky_code %>
+    </li>
+    <li>
+      <%= meteo[0].next_low %>
+    </li>
+    <li>
+      <%= meteo[0].next_high %>
+    </li>
+    <li>
+      <%= meteo[0].next_precip %>
+    </li>
+    <li>
+      <%= meteo[0].sensor_temp %>
+    </li>
+    <li>
+      <%= meteo[0].sensor_hum %>
+    </li>
+  </ul>
+  <br>
+  <h2>Dernieres données : energie</h2>
+  <ul>
+    <li>
+      <%= linky[0].time.toLocaleString('fr-FR', { timeZone: 'UTC' }) %>
+    </li>
+    <li>
+      <%= linky[0].consoHeure %>
+    </li>
+    <li>
+      <%= linky[0].hchc %>
+    </li>
+    <li>
+      <%= linky[0].hchp %>
+    </li>
+    <li>
+      <%= linky[0].puissance_w %>
+    </li>
+  </ul>
+  <br>
+  <div id="solaireGraph" style="width:100%; height:400px;"></div>
+    <div id="meteoGraph" style="width:100%; height:400px;"></div>
+  <div id="linkyGraph" style="width:100%; height:400px;"></div>
+</body>
+
+
+<script type="text/javascript">
+  var solaire = <%-JSON.stringify(solaire)%>;
+
+  var timeArray = [];
+  var ensoleillementArray = [];
+  var courant_chargeArray = [];
+  var capacite_batterieArray = [];
+  var conso_aujArray = [];
+  var conso_moisArray = [];
+  var conso_totaleArray = [];
+  var produite_aujArray = [];
+  var produite_moisArray = [];
+  var produite_totaleArray = [];
+
+
+  solaire.forEach((e) => timeArray.push(e.time));
+  solaire.forEach((e) => ensoleillementArray.push(e.ensoleillement));
+  solaire.forEach((e) => courant_chargeArray.push(e.courant_charge));
+  solaire.forEach((e) => capacite_batterieArray.push(e.capacite_batterie));
+  solaire.forEach((e) => conso_aujArray.push(e.conso_auj));
+  solaire.forEach((e) => conso_moisArray.push(e.conso_mois));
+  solaire.forEach((e) => conso_totaleArray.push(e.conso_totale));
+  solaire.forEach((e) => produite_aujArray.push(e.produite_auj));
+  solaire.forEach((e) => produite_moisArray.push(e.produite_mois));
+  solaire.forEach((e) => produite_totaleArray.push(e.produite_totale));
+
+
+
+  $(function() {
+    var myChart = Highcharts.chart('solaireGraph', {
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: 'Panneaux Solaires'
+      },
+      xAxis: {
+        categories: timeArray
+      },
+      yAxis: {
+        title: {
+          text: 'Energie'
+        }
+      },
+      series: [{
+          name: 'ensoleillement',
+          data: ensoleillementArray
+        }, {
+          name: 'courant de charge',
+          data: courant_chargeArray
+        },
+        {
+          name: 'capacite_batterie',
+          data: capacite_batterieArray
+        },
+        {
+          name: 'energie consommée (day)',
+          data: conso_aujArray
+        },
+        {
+          name: 'energie consommée (mois)',
+          data: conso_moisArray
+        },
+        {
+          name: 'energie consommée (totale)',
+          data: conso_totaleArray
+        },
+        {
+          name: 'energie produite (day)',
+          data: produite_aujArray
+        },
+        {
+          name: 'energie produite (mois)',
+          data: produite_moisArray
+        },
+        {
+          name: 'energie produite (totale)',
+          data: produite_totaleArray
+        }
+      ]
+    });
+  });
+</script>
+<script type="text/javascript">
+  var meteo = <%-JSON.stringify(meteo)%>;
+
+var sensor_humArray = [];
+var sensor_tempArray = [];
+
+
+
+  meteo.forEach((e) => timeArray.push(e.time));
+  meteo.forEach((e) => sensor_humArray.push(e.sensor_hum));
+  meteo.forEach((e) => sensor_tempArray.push(e.sensor_temp));
+
+
+
+  $(function() {
+    var myChart = Highcharts.chart('meteoGraph', {
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: 'Température/Humidité Jardin'
+      },
+      xAxis: {
+        categories: timeArray
+      },
+      yAxis: {
+        title: {
+          text: '°C / %Hum'
+        }
+      },
+      series: [{
+          name: 'Humidité)',
+          data: sensor_humArray
+        }, {
+          name: 'Température',
+          data: sensor_tempArray
+        }
+      ]
+    });
+  });
+</script>
+<script type="text/javascript">
+  var linky = <%-JSON.stringify(linky)%>;
+
+  var timeArray = [];
+  var puissance_wArray = [];
+  var hchcArray = [];
+  var hchpArray = [];
+  var consoHeureArray = [];
+
+
+
+  linky.forEach((e) => timeArray.push(e.time));
+  linky.forEach((e) => puissance_wArray.push(e.puissance_w));
+  linky.forEach((e) => hchcArray.push(e.hchc));
+  linky.forEach((e) => hchpArray.push(e.hchp));
+  linky.forEach((e) => consoHeureArray.push(e.consoHeure));
+
+
+
+  $(function() {
+    var myChart = Highcharts.chart('linkyGraph', {
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: 'Compteur energie'
+      },
+      xAxis: {
+        categories: timeArray
+      },
+      yAxis: {
+        title: {
+          text: 'Energie'
+        }
+      },
+      series: [{
+          name: 'puissance (W)',
+          data: puissance_wArray
+        }, {
+          name: 'Heures creuses',
+          data: hchcArray
+        },
+        {
+          name: 'Heures pleines',
+          data: hchpArray
+        },
+        {
+          name: 'Consommation (heure)',
+          data: consoHeureArray
+        }
+      ]
+    });
+  });
+</script>
+
 </html>

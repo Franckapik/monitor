@@ -1,0 +1,3 @@
+Continuer le monitor en affichant ttes les données disponiblesdes differents measurement...
+Integrer jquery pour les vues.
+Verifier si il possible d'leargir le browser-sync et le watch
